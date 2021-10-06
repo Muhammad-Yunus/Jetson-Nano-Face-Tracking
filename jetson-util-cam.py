@@ -4,7 +4,7 @@ import cv2
 window_name = "Stream Output"
 cv2.namedWindow(window_name, cv2.WINDOW_OPENGL)
 
-cap = jetson.utils.videoSource("/dev/video2") #"nemo_video.mp4") 
+cap = jetson.utils.videoSource("/dev/video2") 
 w,h = cap.GetWidth(), cap.GetHeight()
 
 cuImg = cv2.cuda_GpuMat()
