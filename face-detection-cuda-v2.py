@@ -5,6 +5,9 @@ from gst_cam import camera
 w, h = 480, 320
 cap = cv2.VideoCapture(camera(1, w, h))
 cuFrame = cv2.cuda_GpuMat()
+cuFrame.create((w, h), cv2.CV_8UC3)
+cuGray = cv2.cuda_GpuMat()
+cuGray.create((w, h), cv2.CV_8UC1)
 obj_buf = cv2.cuda_GpuMat()
 
 # Create faceDetector object from CUDA CascadeClassifier
@@ -15,14 +18,16 @@ faceDetector.setMinNeighbors(5)
 faceDetector.setMinObjectSize((20, 20))
 
 while cap.isOpened():
+    e1 = cv2.getTickCount()
     ret, frame = cap.read()
     if not ret: 
         break
-    e1 = cv2.getTickCount()
-    frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
+    cuFrame.upload(frame)
 
-    cuFrame.upload(frame_gray)
-    obj_buf = faceDetector.detectMultiScale(cuFrame)
+    cv2.cuda.cvtColor(cuFrame, cv2.COLOR_BGR2GRAY, cuGray)
+
+    obj_buf = faceDetector.detectMultiScale(cuGray)
     result = obj_buf.download()
 
     # Draw a rectangle around the faces
@@ -32,7 +37,7 @@ while cap.isOpened():
 
      # show the frame
     cv2.imshow("Frame", frame)
-    key = cv2.waitKey(1) & 0xFF
+    key = cv2.waitKey(5) & 0xFF
     
     # if the `q` key was pressed, break from the loop
     if key == ord("q"):

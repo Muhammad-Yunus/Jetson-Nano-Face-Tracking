@@ -4,9 +4,12 @@ from gst_cam import camera
 from flask import Flask, render_template, Response
 
 # initialize camera (via gstreamer pipeline)
-w, h = 480, 320
+w, h = 1280,720 #480, 320
 cap = cv2.VideoCapture(camera(1, w, h))
 cuFrame = cv2.cuda_GpuMat()
+cuFrame.create((w, h), cv2.CV_8UC3)
+cuGray = cv2.cuda_GpuMat()
+cuGray.create((w, h), cv2.CV_8UC1)
 obj_buf = cv2.cuda_GpuMat()
 
 # Create faceDetector object from CUDA CascadeClassifier
@@ -21,10 +24,11 @@ app = Flask(__name__)
 
 def detect_face(frame):
     e1 = cv2.getTickCount()
-    frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    cuFrame.upload(frame)
 
-    cuFrame.upload(frame_gray)
-    obj_buf = faceDetector.detectMultiScale(cuFrame)
+    cv2.cuda.cvtColor(cuFrame, cv2.COLOR_BGR2GRAY, cuGray)
+
+    obj_buf = faceDetector.detectMultiScale(cuGray)
     result = obj_buf.download()
 
     # Draw a rectangle around the faces
