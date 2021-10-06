@@ -3,7 +3,7 @@ from gst_cam import camera
 
 # initialize camera (via gstreamer pipeline)
 w, h = 480, 320
-cap = cv2.VideoCapture(camera(1, w, h))
+cap = cv2.VideoCapture(camera(0, w, h))
 cuFrame = cv2.cuda_GpuMat()
 obj_buf = cv2.cuda_GpuMat()
 
