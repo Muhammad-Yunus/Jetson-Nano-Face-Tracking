@@ -16,7 +16,7 @@ def gen_frames():
         if not success:
             break
         else:
-            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+            #frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
             e2 = cv2.getTickCount()

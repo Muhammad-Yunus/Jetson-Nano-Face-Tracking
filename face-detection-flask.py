@@ -7,14 +7,14 @@ face_cascade = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_defau
 app = Flask(__name__)
 
 # initialize camera (via gstreamer pipeline)
-w, h = 1280,720 #480, 320
-cap = cv2.VideoCapture(camera(1, w, h))
+w, h = 480, 320
+cap = cv2.VideoCapture(camera(0, w, h))
 
 def detect_face(frame):
     e1 = cv2.getTickCount()
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.5, 5, minSize=(20,20) )
+    faces = face_cascade.detectMultiScale(gray, 1.3, 15, minSize=(30,30) )
     for (x, y, w, h) in faces:
         cv2.rectangle(frame, (x,y), (x+w,y+h), (255,0,255), 2)
     

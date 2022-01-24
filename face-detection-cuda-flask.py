@@ -5,16 +5,16 @@ from flask import Flask, render_template, Response
 
 # initialize camera (via gstreamer pipeline)
 w, h = 480, 320
-cap = cv2.VideoCapture(camera(1, w, h))
+cap = cv2.VideoCapture(camera(0, w, h))
 cuFrame = cv2.cuda_GpuMat()
 obj_buf = cv2.cuda_GpuMat()
 
 # Create faceDetector object from CUDA CascadeClassifier
 xml_face = 'haarcascades/haarcascade_frontalface_default_cuda.xml'
 faceDetector = cv2.cuda.CascadeClassifier_create(xml_face)
-faceDetector.setScaleFactor(1.5)
-faceDetector.setMinNeighbors(5)
-faceDetector.setMinObjectSize((20, 20))
+faceDetector.setScaleFactor(1.3)
+faceDetector.setMinNeighbors(15)
+faceDetector.setMinObjectSize((30, 30))
 
 # initialize Flask
 app = Flask(__name__)
